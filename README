@@ -1,0 +1,74 @@
+NAME
+    Perinci::CmdLine::Util - Utility routines related to Perinci::CmdLine
+
+VERSION
+    This document describes version 0.01 of Perinci::CmdLine::Util (from
+    Perl distribution Perinci-CmdLine-Util), released on 2014-11-01.
+
+SYNOPSIS
+DESCRIPTION
+FUNCTIONS
+  detect_perinci_cmdline_script(%args) -> [status, msg, result, meta]
+    Detect whether a file is a Perinci::CmdLine-based CLI script.
+
+    The criteria are:
+
+    *   the file must exist and readable;
+
+    *   (optional, turned on by "filter_x") file must have its executable
+        mode bit set;
+
+    *   content must start with a shebang "#!";
+
+    *   content must contain something like "use Perinci::CmdLine";
+
+    Arguments ('*' denotes required arguments):
+
+    *   filter_x => *bool*
+
+        If on, only consider script that has +x mode bit set.
+
+    *   script* => *any*
+
+        Path to file to be checked.
+
+    Return value:
+
+    Returns an enveloped result (an array).
+
+    First element (status) is an integer containing HTTP status code (200
+    means OK, 4xx caller error, 5xx function error). Second element (msg) is
+    a string containing error message, or 'OK' if status is 200. Third
+    element (result) is optional, the actual result. Fourth element (meta)
+    is called result metadata and is optional, a hash that contains extra
+    information.
+
+     (any)
+
+SEE ALSO
+    Perinci::CmdLine
+
+HOMEPAGE
+    Please visit the project's homepage at
+    <https://metacpan.org/release/Perinci-CmdLine-Util>.
+
+SOURCE
+    Source repository is at
+    <https://github.com/perlancar/perl-Perinci-CmdLine-Util>.
+
+BUGS
+    Please report any bugs or feature requests on the bugtracker website
+    <https://rt.cpan.org/Public/Dist/Display.html?Name=Perinci-CmdLine-Util>
+
+    When submitting a bug or request, please include a test-file or a patch
+    to an existing test-file that illustrates the bug or desired feature.
+
+AUTHOR
+    perlancar <perlancar@cpan.org>
+
+COPYRIGHT AND LICENSE
+    This software is copyright (c) 2014 by perlancar@cpan.org.
+
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
+
