@@ -1,7 +1,7 @@
 package Perinci::CmdLine::Util;
 
 our $DATE = '2014-11-01'; # DATE
-our $VERSION = '0.02'; # VERSION
+our $VERSION = '0.03'; # VERSION
 
 use 5.010001;
 use strict;
@@ -89,6 +89,7 @@ sub detect_perinci_cmdline_script {
 
     my $yesno = 0;
     my $reason = "";
+    my %extra;
 
   DETECT:
     {
@@ -161,6 +162,8 @@ sub detect_perinci_cmdline_script {
                         }
                         $yesno = 1;
                         $reason = "Wrapper script for '$1'";
+                        $extra{'func.is_wrapper'} = 1;
+                        $extra{'func.wrapped'}    = $1;
                         last DETECT;
                     }
                 }
@@ -169,7 +172,7 @@ sub detect_perinci_cmdline_script {
         } # for alt
     }
 
-    [200, "OK", $yesno, {"func.reason"=>$reason}];
+    [200, "OK", $yesno, {"func.reason"=>$reason, %extra}];
 }
 
 1;
@@ -187,7 +190,7 @@ Perinci::CmdLine::Util - Utility routines related to Perinci::CmdLine
 
 =head1 VERSION
 
-This document describes version 0.02 of Perinci::CmdLine::Util (from Perl distribution Perinci-CmdLine-Util), released on 2014-11-01.
+This document describes version 0.03 of Perinci::CmdLine::Util (from Perl distribution Perinci-CmdLine-Util), released on 2014-11-01.
 
 =head1 SYNOPSIS
 

@@ -2,7 +2,7 @@ NAME
     Perinci::CmdLine::Util - Utility routines related to Perinci::CmdLine
 
 VERSION
-    This document describes version 0.02 of Perinci::CmdLine::Util (from
+    This document describes version 0.03 of Perinci::CmdLine::Util (from
     Perl distribution Perinci-CmdLine-Util), released on 2014-11-01.
 
 SYNOPSIS
