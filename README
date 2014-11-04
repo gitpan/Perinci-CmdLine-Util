@@ -2,7 +2,7 @@ NAME
     Perinci::CmdLine::Util - Utility routines related to Perinci::CmdLine
 
 VERSION
-    This document describes version 0.03 of Perinci::CmdLine::Util (from
+    This document describes version 0.04 of Perinci::CmdLine::Util (from
     Perl distribution Perinci-CmdLine-Util), released on 2014-11-01.
 
 SYNOPSIS
@@ -23,42 +23,11 @@ FUNCTIONS
     *   either: must be perl script (shebang line contains 'perl') and must
         contain something like "use Perinci::CmdLine";
 
-    *   or: a script tagged as a wrapper script and the wrapped script is a
-        Perinci::CmdLine script.
-
     Arguments ('*' denotes required arguments):
-
-    *   include_backup => *bool* (default: 0)
-
-        Include backup files.
 
     *   include_noexec => *bool* (default: 1)
 
         Include scripts that do not have +x mode bit set.
-
-    *   include_wrapper => *bool* (default: 0)
-
-        Include wrapper scripts.
-
-        A wrapper script is another Perl script, a shell script, or some
-        other script which wraps a Perinci::CmdLine script. For example, if
-        "list-id-holidays" is a Perinci::CmdLine script, then this shell
-        script called "list-id-joint-leaves" is a wrapper:
-
-         #!/bin/bash
-         list-id-holidays --is-holiday=0 --is-joint-leave=0 "$@"
-
-        It makes sense to provide the same completion for this wrapper
-        script as "list-id-holidays".
-
-        To help this function detect such script, you need to put a tag
-        inside the file:
-
-         #!/bin/bash
-         # TAG wrapped=list-id-holidays
-         list-id-holidays --is-holiday=0 --is-joint-leave=0 "$@"
-
-        If this option is enabled, these scripts will be included.
 
     *   script* => *any*
 
