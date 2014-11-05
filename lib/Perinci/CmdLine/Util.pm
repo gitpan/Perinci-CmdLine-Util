@@ -1,7 +1,7 @@
 package Perinci::CmdLine::Util;
 
-our $DATE = '2014-11-01'; # DATE
-our $VERSION = '0.04'; # VERSION
+our $DATE = '2014-11-05'; # DATE
+our $VERSION = '0.05'; # VERSION
 
 use 5.010001;
 use strict;
@@ -32,10 +32,23 @@ The criteria are:
 
 _
     args => {
-        script => {
+        filename => {
             summary => 'Path to file to be checked',
-            req => 1,
-            pos => 0,
+            schema => 'str*',
+            description => <<'_',
+
+Either `filename` or `string` must be specified.
+
+_
+        },
+        string => {
+            summary => 'Path to file to be checked',
+            schema => 'buf*',
+            description => <<'_',
+
+Either `file` or `string` must be specified.
+
+_
         },
         include_noexec => {
             summary => 'Include scripts that do not have +x mode bit set',
@@ -47,46 +60,63 @@ _
 sub detect_perinci_cmdline_script {
     my %args = @_;
 
-    my $script = $args{script} or return [400, "Please specify script"];
+    (defined($args{filename}) xor defined($args{string}))
+        or return [400, "Please specify either filename or string"];
     my $include_noexec  = $args{include_noexec}  // 1;
 
     my $yesno = 0;
     my $reason = "";
 
+    my $str = $args{string};
   DETECT:
     {
-        unless (-f $script) {
-            $reason = "Not a file";
-            last;
-        };
-        if (!$include_noexec && !(-x _)) {
-            $reason = "Not an executable";
-            last;
+        if (defined $args{filename}) {
+            my $fn = $args{filename};
+            unless (-f $fn) {
+                $reason = "'$fn' is not a file";
+                last;
+            };
+            if (!$include_noexec && !(-x _)) {
+                $reason = "'$fn' is not an executable";
+                last;
+            }
+            my $fh;
+            unless (open $fh, "<", $fn) {
+                $reason = "Can't be read";
+                last;
+            }
+            # for efficiency, we read a bit only here
+            read $fh, $str, 2;
+            unless ($str eq '#!') {
+                $reason = "Does not start with a shebang (#!) sequence";
+                last;
+            }
+            my $shebang = <$fh>;
+            unless ($shebang =~ /perl/) {
+                $reason = "Does not have 'perl' in the shebang line";
+                last;
+            }
+            seek $fh, 0, 0;
+            {
+                local $/;
+                $str = <$fh>;
+            }
         }
-        my $fh;
-        unless (open $fh, "<", $script) {
-            $reason = "Can't be read";
-            last;
-        }
-        read $fh, my($buf), 2;
-        unless ($buf eq '#!') {
+        unless ($str =~ /\A#!/) {
             $reason = "Does not start with a shebang (#!) sequence";
             last;
         }
-        my $shebang = <$fh>;
-        unless ($shebang =~ /perl/) {
+        unless ($str =~ /\A#!.*perl/) {
             $reason = "Does not have 'perl' in the shebang line";
             last;
         }
-        while (<$fh>) {
-            if (/^\s*(use|require)\s+Perinci::CmdLine(|::Any|::Lite)/) {
-                $yesno = 1;
-                last DETECT;
-            }
+        if ($str =~ /^\s*(use|require)\s+Perinci::CmdLine(|::Any|::Lite)/m) {
+            $yesno = 1;
+            last DETECT;
         }
         $reason = "Can't find any statement requiring Perinci::CmdLine".
             " module family";
-    }
+    } # DETECT
 
     [200, "OK", $yesno, {"func.reason"=>$reason}];
 }
@@ -106,7 +136,7 @@ Perinci::CmdLine::Util - Utility routines related to Perinci::CmdLine
 
 =head1 VERSION
 
-This document describes version 0.04 of Perinci::CmdLine::Util (from Perl distribution Perinci-CmdLine-Util), released on 2014-11-01.
+This document describes version 0.05 of Perinci::CmdLine::Util (from Perl distribution Perinci-CmdLine-Util), released on 2014-11-05.
 
 =head1 SYNOPSIS
 
@@ -139,13 +169,21 @@ Arguments ('*' denotes required arguments):
 
 =over 4
 
+=item * B<filename> => I<str>
+
+Path to file to be checked.
+
+Either C<filename> or C<string> must be specified.
+
 =item * B<include_noexec> => I<bool> (default: 1)
 
 Include scripts that do not have +x mode bit set.
 
-=item * B<script>* => I<any>
+=item * B<string> => I<buf>
 
 Path to file to be checked.
+
+Either C<file> or C<string> must be specified.
 
 =back
 
@@ -162,7 +200,7 @@ that contains extra information.
 
  (any)
 
-=for Pod::Coverage ^(new)$
+=for Pod::Coverage ^()$
 
 =head1 SEE ALSO
 

@@ -2,8 +2,8 @@ NAME
     Perinci::CmdLine::Util - Utility routines related to Perinci::CmdLine
 
 VERSION
-    This document describes version 0.04 of Perinci::CmdLine::Util (from
-    Perl distribution Perinci-CmdLine-Util), released on 2014-11-01.
+    This document describes version 0.05 of Perinci::CmdLine::Util (from
+    Perl distribution Perinci-CmdLine-Util), released on 2014-11-05.
 
 SYNOPSIS
 DESCRIPTION
@@ -25,13 +25,21 @@ FUNCTIONS
 
     Arguments ('*' denotes required arguments):
 
+    *   filename => *str*
+
+        Path to file to be checked.
+
+        Either "filename" or "string" must be specified.
+
     *   include_noexec => *bool* (default: 1)
 
         Include scripts that do not have +x mode bit set.
 
-    *   script* => *any*
+    *   string => *buf*
 
         Path to file to be checked.
+
+        Either "file" or "string" must be specified.
 
     Return value:
 
