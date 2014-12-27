@@ -1,7 +1,7 @@
 package Perinci::CmdLine::Util;
 
-our $DATE = '2014-11-05'; # DATE
-our $VERSION = '0.05'; # VERSION
+our $DATE = '2014-12-27'; # DATE
+our $VERSION = '0.06'; # VERSION
 
 use 5.010001;
 use strict;
@@ -12,6 +12,11 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(detect_perinci_cmdline_script);
 
 our %SPEC;
+
+$SPEC{':package'} = {
+    v => 1.1,
+    summary => 'Utility routines related to Perinci::CmdLine',
+};
 
 $SPEC{detect_perinci_cmdline_script} = {
     v => 1.1,
@@ -110,6 +115,10 @@ sub detect_perinci_cmdline_script {
             $reason = "Does not have 'perl' in the shebang line";
             last;
         }
+        if ($str =~ /^#\s*NO_PERINCI_CMDLINE_SCRIPT\s*$/m) {
+            $reason = "Marked with # NO_PERINCI_CMDLINE_SCRIPT directive";
+            last;
+        }
         if ($str =~ /^\s*(use|require)\s+Perinci::CmdLine(|::Any|::Lite)/m) {
             $yesno = 1;
             last DETECT;
@@ -136,7 +145,7 @@ Perinci::CmdLine::Util - Utility routines related to Perinci::CmdLine
 
 =head1 VERSION
 
-This document describes version 0.05 of Perinci::CmdLine::Util (from Perl distribution Perinci-CmdLine-Util), released on 2014-11-05.
+This document describes version 0.06 of Perinci::CmdLine::Util (from Perl distribution Perinci-CmdLine-Util), released on 2014-12-27.
 
 =head1 SYNOPSIS
 
